@@ -22,14 +22,25 @@ public class CreateDatabaseCats {
                 int age = str.nextInt();
                 str.nextLine();
                 System.out.println("Введите weight:");
-                //double weight = str.nextDouble();
-
                 String input = str.nextLine();
                 if (input.contains(",")) {
                     input = input.replace(",", ".");
                 }
                 double weight = Double.parseDouble(input);
                 cats.insert_cat(name, type, age, weight);
+            }
+        }
+        while (true){
+            System.out.println("Хотите добавить рандомных котиков (Y/N)");
+            String anser = str.nextLine();
+            if (anser.equals("N")){
+                break;
+            }
+            else if (anser.equals("Y")){
+                System.out.println("Введите какое количество добавить :");
+                int n = str.nextInt();
+                str.nextLine();
+                cats.add_more_cats(n);
             }
         }
     }

@@ -1,4 +1,6 @@
+import java.io.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Cats {
     public Cats() {
@@ -116,6 +118,49 @@ public class Cats {
                     System.out.println(e.getMessage());
                 }
             }
+    }
+    public void  add_more_cats (int n) {
+        int quantity = 0;
+        String fileName = "D:/Изображения/ЗАГРУЗКИ/names.txt";
+        ArrayList<String> namesList = new ArrayList<String>();
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] names = line.split(" ");
+                for (String name : names) {
+                    namesList.add(name);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String[] names_cat = namesList.toArray(new String[0]);
+        int l = names_cat.length;
+                for (int a = 0; a < n; a++) {
+                    int type = 1 + (int) (Math.random() * 62);
+                    int name = (int) (Math.random() * l );
+                    int age = 1 + (int) (Math.random() * 6);
+                    double weight = Math.round((2 + (Math.random() * 5)) * 10.0) / 10.0;
+                    try {
+                        Connection conn = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+                        String sql = "INSERT INTO cats (name, type_id, age, weight)" +
+                                "VALUES (?, ?, ?, ?)" ;
+                        conn.prepareStatement(sql);
+                        PreparedStatement statement;
+                        statement = conn.prepareStatement(sql);
+                        statement.setString(1, names_cat[name]);
+                        statement.setInt(2, type);
+                        statement.setInt(3, age);
+                        statement.setDouble(4, weight);
+                        statement.executeUpdate();
+                        conn.close();
+                        statement.close();
+                        quantity++;
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+        System.out.println("Котик(и) добавлен(ы) в количечтве: " + quantity);
     }
 }
 

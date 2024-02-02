@@ -162,5 +162,99 @@ public class Cats {
                 }
         System.out.println("Котик(и) добавлен(ы) в количечтве: " + quantity);
     }
+    public void delete_cat_id (int id) {
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+            String query = "DELETE FROM cats WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+            connection.close();
+            System.out.println("Строка с id = " + id + " удалена.");
+        }
+        catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+    public void delete_cat_where (String where) {
+        int quantity = 0;
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+            String query = "DELETE FROM cats WHERE name LIKE ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1,where+"%");
+            quantity++;
+            statement.executeUpdate();
+            connection.close();
+        }
+        catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        System.out.println("Удалено котиков : " + quantity);
+    }
+
+    public void update_cat (int id, String set, String where) {
+        if (where.equals("type_id")) {
+            try {
+                int set_int = Integer.parseInt(set);
+                Connection connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+                String query = "UPDATE cats SET type_id = ? WHERE id = ? ";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setInt(1,set_int);
+                statement.setInt(2, id);
+                statement.executeUpdate();
+                connection.close();
+            }
+            catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+            return;
+        }
+        if (where.equals("name")) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+                String query = "UPDATE cats SET name = ? WHERE id = ? ";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1,set);
+                statement.setInt(2, id);
+                statement.executeUpdate();
+                connection.close();
+            }
+            catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+            return;
+        }
+        if (where.equals("age")) {
+            try {
+                int set_int = Integer.parseInt(set);
+                Connection connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+                String query = "UPDATE cats SET type_id = ? WHERE id = ? ";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setInt(1,set_int);
+                statement.setInt(2, id);
+                statement.executeUpdate();
+                connection.close();
+            }
+            catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        if (where.equals("weight")) {
+            try {
+                double set_int = Double.parseDouble((set));
+                Connection connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+                String query = "UPDATE cats SET type_id = ? WHERE id = ? ";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setDouble(1,set_int);
+                statement.setInt(2, id);
+                statement.executeUpdate();
+                connection.close();
+            }
+            catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
 }
 

@@ -1,6 +1,7 @@
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Cats {
     public Cats() {
@@ -255,6 +256,154 @@ public class Cats {
                 System.err.println(e.getMessage());
             }
         }
+    }
+
+    public void get_cat (int id) throws SQLException {
+        String type_id = null;
+        String name = null;
+        int age = 0;
+        double weight = 0.0;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+            String query = "SELECT ty.type AS type,name ,age ,weight \n" +
+                           "FROM cats ca JOIN types ty ON ca.type_id = ty.id \n" +
+                           "WHERE ca.id = ? ";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                type_id = resultSet.getString("type");
+                name = resultSet.getString("name");
+                age = resultSet.getInt("age");
+                weight = resultSet.getDouble("weight");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        System.out.println("Name : " + name );
+        System.out.println("type_id : " + type_id);
+        System.out.println("age : " + age);
+        System.out.println("weight : " + weight + " кг.");
+    }
+    public void get_cat_where(String where) throws SQLException {
+        List<Cats_info> cats_info = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String name = null;
+        int age = 0;
+        double weight = 0.0;
+        int quantity = 0;
+
+        String[] parts = where.split(" ");
+        int number = Integer.parseInt(parts[0]);
+        String letter = parts[1];
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+            String query = "SELECT ty.type AS type,name ,age ,weight \n" +
+                           "FROM cats ca JOIN types ty ON ca.type_id = ty.id \n" +
+                           "WHERE ca.id < ? AND name LIKE ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1,number);
+            statement.setString(2,letter+"%");
+
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String type = resultSet.getString("type");
+                name = resultSet.getString("name");
+                age = resultSet.getInt("age");
+                weight = resultSet.getDouble("weight");
+                Cats_info catsInfo = new Cats_info(type, name, age, weight);
+                cats_info.add(catsInfo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        for (Cats_info catsInfo : cats_info) {
+            System.out.println("Type: " + catsInfo.getType());
+            System.out.println("Name: " + catsInfo.getName());
+            System.out.println("Age: " + catsInfo.getAge());
+            System.out.println("Weight: " + catsInfo.getWeight());
+            System.out.println();
+            quantity++;
+        }
+        System.out.println(quantity);
+    }
+    public void get_all_cats() throws SQLException {
+
+            List<Cats_info> cats_info = new ArrayList<>();
+            Connection connection = null;
+            PreparedStatement statement = null;
+            ResultSet resultSet = null;
+            String name = null;
+            int age = 0;
+            double weight = 0.0;
+            int quantity = 0;
+
+            try {
+                connection = DriverManager.getConnection("jdbc:sqlite:D:/SQL/new/My_cats.db");
+                String query = "SELECT ty.type AS type,name ,age ,weight \n" +
+                        "FROM cats ca JOIN types ty ON ca.type_id = ty.id";
+                statement = connection.prepareStatement(query);
+                resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    String type = resultSet.getString("type");
+                    name = resultSet.getString("name");
+                    age = resultSet.getInt("age");
+                    weight = resultSet.getDouble("weight");
+                    Cats_info catsInfo = new Cats_info(type, name, age, weight);
+                    cats_info.add(catsInfo);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            }
+            for (Cats_info catsInfo : cats_info) {
+                System.out.println("Type: " + catsInfo.getType());
+                System.out.println("Name: " + catsInfo.getName());
+                System.out.println("Age: " + catsInfo.getAge());
+                System.out.println("Weight: " + catsInfo.getWeight());
+                System.out.println();
+                quantity++;
+            }
+        System.out.println(quantity);
     }
 }
 

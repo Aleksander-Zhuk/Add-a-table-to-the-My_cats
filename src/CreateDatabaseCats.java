@@ -1,7 +1,8 @@
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CreateDatabaseCats {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Scanner str = new Scanner(System.in);
 
         Cats cats = new Cats();
@@ -32,9 +33,7 @@ public class CreateDatabaseCats {
         while (true) {
             System.out.println("Хотите добавить рандомных котиков (Y/N)");
             String anser = str.nextLine();
-            if (anser.equals("N")){
-                break;
-            }
+            if (anser.equals("N")) break;
             else if (anser.equals("Y")){
                 System.out.println("Введите какое количество добавить :");
                 int n = str.nextInt();
@@ -124,6 +123,46 @@ public class CreateDatabaseCats {
                         }
                     }
                 }
+            }
+        }
+        while (true) {
+            System.out.println("Хотите узнать про котика (Y/N)");
+            String anser = str.nextLine();
+            if (anser.equals("N")) break;
+            else if (anser.equals("Y")){
+                System.out.println("Введите id котика :");
+                int n = str.nextInt();
+                str.nextLine();
+                cats.get_cat(n);
+            }
+        }
+        while (true) {
+            System.out.println("Если вы хотите получить список котиков по (max id) и по первой букве имени (Y/N)");
+            String answer2 = str.nextLine();
+            if (answer2.equals("N")) {
+                break;
+            }
+            else if (answer2.equals("Y")) {
+                System.out.println("Введите сначало max id:");
+                int id = str.nextInt();
+                str.nextLine();
+                System.out.println("Введите первую букву type:");
+                String a = str.nextLine().toUpperCase();
+                char symbol = a.charAt(0);
+                String where = id + " " + symbol;
+                try {
+                    cats.get_cat_where(where);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        while (true) {
+            System.out.println("Хотите узнать про всех котиков (Y/N)");
+            String anser = str.nextLine();
+            if (anser.equals("N")) break;
+            else if (anser.equals("Y")){
+                cats.get_all_cats();
             }
         }
     }
